@@ -1,0 +1,13 @@
+<h3>Algoritmos</h3>
+{% if operation_type == "entrenar" %}
+    <p>A continuación se presenta un listado con los algoritmos implementados, seleccione los que desee {{ operation_type }}:</p>
+{% else %}
+    <p>A continuación se presenta un listado con los algoritmos implementados, seleccione los que deban {{ operation_type }}:</p>
+{% endif %}
+<form>
+    <input type="checkbox" id="algorithm1" value="NB"><label for="algorithm1">Clasificador ingenuo de Bayes (Naive Bayes)</label> <br>
+    <input type="checkbox" id="algorithm2" value="SVM"><label for="algorithm2">Máquinas de soporte vectorial (SVM)</label> <br>
+    <input type="checkbox" id="algorithm3" value="ANN"><label for="algorithm3">Redes Neuronales Artificiales (ANN)</label> <br>
+    <input type="checkbox" id="algorithm5" value="KM"><label for="algorithm5">K-Means</label> <br>
+    <input type="checkbox" id="algorithm4" value="DT"><label for="algorithm4">Árboles de decisión</label> <br>    
+</form>

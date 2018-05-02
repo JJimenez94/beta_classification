@@ -1,0 +1,36 @@
+{% extends 'layout.html'%}
+
+{% block body %}
+    <!-- Main -->
+    <section id="main" class="wrapper style1">        
+        <div class="container">
+            <div class="row">
+                <div class="4u">
+                    <section>
+                        <a href="/" class="image fit"><img src="{{ url_for('static', filename='logo.png') }}" alt="" /></a>
+                    </section>                                      
+                </div>
+                <div class="8u skel-cell-important">
+                    <section>
+                        <h2>¿Beta Classification?</h2>
+                        <p>Beta Classification es un componente de software escrito en Python 3, usando el framework Flask, se basa en la arquitectura cliente servidor y el estilo arquitectural REST para la exposición de servicios web. </p>
+                        <p>Este componente es presentado como desarrollo de la asignatura trabajo de grado y busca ofrecer una interfaz amigable para el uso de algoritmos de aprendizaje automático para la clasificación de textos cortos, se implementaron para el proyecto los siguientes algoritmos:</p>
+                        <ul>
+                            <li>Clasificador ingenuo de Bayes (Naive Bayes)</li>
+                            <li>Máquinas de soporte vectorial (SVM)</li>
+                            <li>Redes Neuronales Artificiales (ANN)</li>
+                            <li>K-Means</li>
+                            <li>Árboles de decisión</li>
+                        </ul>                    
+                    </section>
+                    <div class="inner">                            
+                            <ul class="actions">
+                                <li><a href="/entrenar_algoritmos" class="button big alt">Entrenar algoritmos</a></li>
+                                <li><a href="/clasificar" class="button big alt">Clasificar datos</a></li>
+                            </ul>
+                        </div>
+                </div>
+            </div>            
+        </div>
+    </section>
+{% endblock %}

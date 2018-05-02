@@ -1,0 +1,28 @@
+{% extends 'layout.html'%}
+
+{% block body %}
+<!-- Main -->
+<section id="three" class="wrapper style1">
+    <div class="container">
+        <div class="row">
+            <div class="8u">
+                <section>
+                    <h2>Breve introducción al proyecto</h2>
+                    <!-- Photo by Blake Connally on Unsplash -->
+                    <a href="/" class="image fit"><img src="{{ url_for('static', filename='computing.jpg') }}" alt="" /></a>
+                    <p>Este proyecto busca mediante un conjunto de algoritmos de aprendizaje de máquina supervisados, realizar la clasificación de textos cortos, además se desea que el proyecto sea integrable a plataformas web, por lo que este ofrece una API que puede ser consumida directamente.</p>
+                </section>
+            </div>
+            <div class="4u">
+                <section>
+                    <h3>Conoce más</h3>
+                    <p>Te invito a conocer más a fondo el proyecto, la motivación y otros datos relevantes.</p>
+                    <ul class="actions">
+                        <li><a href="/conoce_beta" class="button alt">Sobre el proyecto</a></li>
+                    </ul>
+                </section>                                
+            </div>
+        </div>
+    </div>
+</section>			
+{% endblock %}
