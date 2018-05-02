@@ -1,0 +1,19 @@
+<h3>Dataset</h3>
+{% if operation_type == "entrenar" %}
+    <p>En este espacio deberá cargar el dataset para {{ operation_type }} los algoritmos seleccionados, las extensiones soportadas son:
+        <ul>                                    
+            <li>txt</li>
+            <li>arff</li>
+            <li>csv</li>
+            <li>xls</li>
+            <li>xlsx</li>
+        </ul>
+    </p>
+{% else %}
+    <p>En este espacio deberá cargar el dataset que los algoritmos deben {{ operation_type }}.</p>
+{% endif %}
+
+<form method="POST" enctype="multipart/form-data">
+    <input type="file" id="fileSelector" name="fileSelector" accept=".txt, .arff, .csv, .xls, .xlsx" class="button alt">
+    <p> <center><input type="submit" value="{{ operation_type }}" class="button alt"></center> </p>
+</form>

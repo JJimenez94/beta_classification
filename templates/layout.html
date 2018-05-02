@@ -1,0 +1,47 @@
+<!doctype HTML>
+<!--
+	Based on the templated Ion by TEMPLATED
+	templated.co @templatedco
+	Released for free under the Creative Commons Attribution 3.0 license (templated.co/license)
+-->
+<html>
+	<link rel="stylesheet" type="text/css" href=" {{ url_for('static', filename='skel.css') }} "/>
+	<link rel="stylesheet" type="text/css" href=" {{ url_for('static', filename='style.css') }} "/>
+	<link rel="stylesheet" type="text/css" href=" {{ url_for('static', filename='style-xlarge.css') }} "/>
+<head>
+	<link rel="icon" type="image/png" href="{{ url_for('static', filename='favicon.png') }}">
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>Beta Classification</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">	
+</head>
+<body>
+	<header id="header" class="skel-layers-fixed">
+	<h1>Beta Classification</h1>
+	<nav id="nav">
+		<ul>
+			<li><a href="/">Inicio</a></li>
+			<li><a href="/conoce_beta">Sobre el proyecto</a></li>
+			<li><a href="/entrenar_algoritmos">Entrenar algoritmos</a></li>
+			<li><a href="/clasificar">Clasificar datos</a></li>			
+		</ul>
+	</nav>
+	</header>
+
+	<nav id="nav">
+		{% block body %}
+		{% endblock %}
+	</nav>
+
+	<!-- Footer -->
+	<footer id="footer">
+		<ul class="copyright">
+			<li>Desarrollado por Juan Sebastián Jiménez Valero.</li>
+			<li>&copy; Beta Classification es un proyecto netamente académico. Algunos derechos reservados.</li>
+			<li><a href="https://github.com/JJimenez94/beta_classification" target="_blank">
+				<img src="{{ url_for('static', filename='github.png') }}" style="width:45px;height:45px;">
+			</a></li>				
+		</ul>		
+	</footer>
+</body>
+</html>
