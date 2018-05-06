@@ -1,5 +1,5 @@
-from view.FormClasses import DatasetForm, AlgorithmForm
-from flask import Flask, render_template, request, flash
+from view.FormClasses import AlgorithmForm
+from flask import Flask, render_template, request, flash, redirect
 from flask_uploads import UploadSet, configure_uploads
 import os.path
 
@@ -14,7 +14,7 @@ datasets = UploadSet("datasets", ("txt","arff","csv","xls","xlsx"))
 configure_uploads(app, datasets)
 
 def changeName(currentFileName, operation):
-    index = currentFileName.find('.')
+    index = currentFileName.rfind('.')
     if (index != -1):
         newName = currentFileName[index:]
         if operation == "entrenar":
@@ -42,7 +42,8 @@ def about():
 
 @app.route("/entrenar_algoritmos", methods=["GET", "POST"])
 def train():
-    if request.method == "POST" and 'fileSelector' in request.files:
+    form = AlgorithmForm(request.form)
+    if request.method == "POST" and 'fileSelector' in request.files and form.validate():
         uploadFile =  request.files['fileSelector']
         temporal = changeName(uploadFile.filename, "entrenar")
         if uploadFile.filename == '':
@@ -54,22 +55,34 @@ def train():
             datasets.save(uploadFile)
             flash('File ' + temporal + ' uploaded')
         return render_template("result.html", operation_type="entrenar")
-    return render_template("algorithm_layout.html", operation_type="entrenar")
+    return render_template("algorithm_layout.html", operation_type="entrenar", form=form)
 
 @app.route("/clasificar", methods=["GET", "POST"])
 def classificate():
+    form = AlgorithmForm(request.form)
     if request.method == "POST"  and 'fileSelector' in request.files:
-        uploadFile =  request.files['fileSelector']
-        temporal = changeName(uploadFile.filename, "clasificar")
-        if uploadFile.filename == '':
-            flash('No selected file')
+        nb = form.naive.data
+        svm = form.svm.data
+        ann = form.ann.data
+        km = form.km.data
+        dt = form.dt.data
+        print(str(nb))
+        print(str(svm))
+        print(str(ann))
+        print(str(km))
+        print(str(dt))
+        if (nb or svm or ann or km or dt):            
+            uploadFile =  request.files['fileSelector']
+            temporal = changeName(uploadFile.filename, "clasificar")            
+            if temporal != None:
+                clearFiles(temporal)
+                uploadFile.filename = temporal
+                datasets.save(uploadFile)
+            return render_template("result.html", operation_type="clasificar")
+        else:
+            flash('No selected algoritm')
             return redirect(request.url)
-        if temporal != None:
-            clearFiles(temporal)
-            uploadFile.filename = temporal
-            datasets.save(uploadFile)
-        return render_template("result.html", operation_type="clasificar")
-    return render_template("algorithm_layout.html", operation_type="clasificar")
+    return render_template("algorithm_layout.html", operation_type="clasificar", form=form)
 
 @app.errorhandler(404)
 def page_not_found(e):

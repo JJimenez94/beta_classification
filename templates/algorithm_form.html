@@ -1,0 +1,52 @@
+<div class="container">
+    <section>
+        <form method="POST" enctype="multipart/form-data">
+        {% from "includes/_formhelper.html" import render_field %}
+        <div class="row">
+            <div class="6u">
+                <h3>Algoritmos</h3>
+                {% if operation_type == "entrenar" %}
+                    <p>A continuación se presenta un listado con los algoritmos implementados, seleccione los que desee {{ operation_type }}:</p>
+                {% else %}
+                    <p>A continuación se presenta un listado con los algoritmos implementados, seleccione los que deban {{ operation_type }}:</p>
+                {% endif %}
+                <p>
+                {{render_field(form.naive)}} <br>
+                {{render_field(form.svm)}} <br>
+                {{render_field(form.ann)}} <br>
+                {{render_field(form.km)}} <br>                          
+                {{render_field(form.dt)}}
+                </p>
+            </div>
+            <div class="6u">
+                <h3>Dataset</h3>
+                {% if operation_type == "entrenar" %}
+                    <p>En este espacio deberá cargar el dataset para {{ operation_type }} los algoritmos seleccionados, las extensiones soportadas son:
+                        <ul>                                    
+                            <li>txt</li>
+                            <!-- <li>arff</li> -->            
+                            <li>csv</li>
+                            <li>xls</li>
+                            <li>xlsx</li>
+                        </ul>    
+                    </p>
+                {% else %}
+                    <p>En este espacio deberá cargar el dataset que los algoritmos deben {{ operation_type }}.</p>    
+                {% endif %}
+                <p>En este proyecto al usar datos provenientes de la red social Twitter se espera que los datos se encuentren en el siguiente formato:</p>
+                <p>
+                <center>
+                [clase, identificador del tweet, fecha del tweet, query, usuario, texto del tweet]
+                </center>
+                </p>
+                {{render_field(form.dataset, class='alt')}}
+            </div>
+        </div>
+        <center>
+            <p>
+                <br> <input type="submit" value="{{ operation_type }}" class="button alt">
+            </p>
+        </center>
+        </form>  
+    </section>
+</div>
