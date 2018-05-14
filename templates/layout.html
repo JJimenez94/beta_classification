@@ -30,18 +30,17 @@
 	
 	<div class="container">
 		{% with messages = get_flashed_messages() %}
-		{% if messages %}			
-			{% for message in messages %}
-			<div class="alert">
-				<button type="button" class="close" data-dismiss="alert">&times;</button>
-				{{ message }}
-			</div>
-			{% endfor %}			
-		{% endif %}
+			{% if messages %}
+				<ul>
+				{% for message in messages %}
+					<li>{{ message }}</li>
+				{% endfor %}
+				</ul>
+			{% endif %}
 		{% endwith %}
 	</div>
-		{% block body %}
-		{% endblock %}
+	{% block body %}
+	{% endblock %}
 
 	<!-- Footer -->
 	<footer id="footer">

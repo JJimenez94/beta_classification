@@ -10,7 +10,7 @@ app.config.update(dict(
     UPLOADS_DEFAULT_DEST="uploads"   
 ))
 
-datasets = UploadSet("datasets", ("txt","arff","csv","xls","xlsx"))
+datasets = UploadSet("datasets", ("txt","csv","xls","xlsx"))
 configure_uploads(app, datasets)
 
 def changeName(currentFileName, operation):
@@ -18,7 +18,7 @@ def changeName(currentFileName, operation):
     if (index != -1):
         newName = currentFileName[index:]
         if operation == "entrenar":
-            return "train" + newName
+            return "dataset" + newName
         elif operation == "clasificar":
             return "production" + newName
     return None
