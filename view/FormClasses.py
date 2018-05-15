@@ -11,6 +11,6 @@ class AlgorithmForm(FlaskForm):
     dt = BooleanField('Árboles de decisión')
     classes = StringField('Nombre de la columna que contiene las clases: ', validators=[DataRequired(message="Valor requerido")])
     text = StringField('Nombre de la columna que contiene el texto: ', validators=[DataRequired(message="Valor requerido")])
-    dataset = FileField('Seleccione el dataset: ', validators=[FileRequired(), 
+    dataset = FileField('Seleccione el dataset: ', validators=[FileRequired(message="Archivo requerido"), 
                                                     FileAllowed(["txt","csv","xls","xlsx"]
                                                     , "solamente se permiten datasets")])

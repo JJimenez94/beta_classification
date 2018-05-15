@@ -23,8 +23,8 @@
                     <center>[clase, texto]</center>
                     </p>
                     {{render_field(form.classes)}} <br>
-                    {{render_field(form.text)}}
-                {% endif %}                
+                    {{render_field(form.text)}}                                    
+                {% endif %}
             </div>
             <div class="6u">
                 <h3>Dataset</h3>
@@ -41,8 +41,10 @@
                     <p>Se espera que el dataset se encuentre balanceado entre las categorías de entrada, de no estarlo se procederá a realizar un submuestreo de manera aleatoria para balancearlo</p>
                 {% else %}
                     <p>En este espacio deberá cargar el dataset que los algoritmos deben {{ operation_type }}.</p>
+                    <p>Se espera que el dataset esté compuesto por una sola columna en donde cada registro corresponda con un texto a clasificar</p>
                 {% endif %}                
                 {{render_field(form.dataset, class='alt')}}
+                {{ form.csrf_token }}
             </div>
         </div>
         <center>

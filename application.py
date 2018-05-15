@@ -1,7 +1,9 @@
-from view.FormClasses import AlgorithmForm
+import os.path
+from controller.classifiers import classifiers
 from flask import Flask, render_template, request, flash, redirect
 from flask_uploads import UploadSet, configure_uploads
-import os.path
+from persistence.persistenceManager import uploader
+from view.FormClasses import AlgorithmForm
 
 app = Flask(__name__)
 app.debug=True
@@ -13,15 +15,31 @@ app.config.update(dict(
 datasets = UploadSet("datasets", ("txt","csv","xls","xlsx"))
 configure_uploads(app, datasets)
 
-def changeName(currentFileName, operation):
-    index = currentFileName.rfind('.')
+def getFileExt(filename):
+    index = filename.rfind('.')
     if (index != -1):
-        newName = currentFileName[index:]
-        if operation == "entrenar":
-            return "dataset" + newName
-        elif operation == "clasificar":
-            return "production" + newName
+        return filename[index:]
     return None
+
+def changeName(currentFileName, operation):
+    ext = getFileExt(currentFileName)
+    if ext != None:
+        if operation == "entrenar":
+            return "dataset" + ext
+        elif operation == "clasificar":
+            return "production" + ext
+    return None
+
+def trainModels(models_dict, ext, data_col, class_col):
+    initialized_classifiers = classifiers()
+    persistence_manager = uploader(ext)
+    x_train, y_train, x_test, y_test = persistence_manager.uploadDataset(data_col, class_col)
+    for model in models_dict:
+        if models_dict[model] == True:
+            print("Se va a entrenar: " + model)
+            if model == "naive":
+                initialized_classifiers.trainNaive(x_train, y_train)
+            
 
 def clearFiles(filename):
     filepath = os.path.join(
@@ -42,46 +60,65 @@ def about():
 
 @app.route("/entrenar_algoritmos", methods=["GET", "POST"])
 def train():
-    form = AlgorithmForm(request.form)
-    if request.method == "POST" and 'fileSelector' in request.files and form.validate():
-        uploadFile =  request.files['fileSelector']
-        temporal = changeName(uploadFile.filename, "entrenar")
-        if uploadFile.filename == '':
-            flash('No selected file')
-            return redirect(request.url)
-        if temporal != None:
-            clearFiles(temporal)
-            uploadFile.filename = temporal
-            datasets.save(uploadFile)
-            flash('File ' + temporal + ' uploaded')
-        return render_template("result.html", operation_type="entrenar")
-    return render_template("algorithm_layout.html", operation_type="entrenar", form=form)
-
-@app.route("/clasificar", methods=["GET", "POST"])
-def classificate():
-    form = AlgorithmForm(request.form)
-    if request.method == "POST"  and 'fileSelector' in request.files:
+    form = AlgorithmForm()
+    if request.method == "POST" and form.validate_on_submit():
         nb = form.naive.data
         svm = form.svm.data
         ann = form.ann.data
         km = form.km.data
         dt = form.dt.data
-        print(str(nb))
-        print(str(svm))
-        print(str(ann))
-        print(str(km))
-        print(str(dt))
-        if (nb or svm or ann or km or dt):            
-            uploadFile =  request.files['fileSelector']
-            temporal = changeName(uploadFile.filename, "clasificar")            
-            if temporal != None:
-                clearFiles(temporal)
-                uploadFile.filename = temporal
+        classes = form.classes.data
+        text = form.text.data
+        if (nb or svm or ann or km or dt):
+            algorithms = {'naive':nb
+                , 'svm':svm
+                , 'neural_net':ann
+                , 'k_means':km
+                , 'decision_tree':dt}
+            uploadFile = request.files['dataset']
+            newFileName = changeName(uploadFile.filename, "entrenar")
+            ext = getFileExt(newFileName)
+            if newFileName != None:
+                clearFiles(newFileName)
+                uploadFile.filename = newFileName
                 datasets.save(uploadFile)
-            return render_template("result.html", operation_type="clasificar")
+                print('Archivo: ' + newFileName + ' cargado correctamente')
         else:
-            flash('No selected algoritm')
-            return redirect(request.url)
+            print("Debe seleccionar al menos un algoritmo, por favor intente de nuevo")
+        del uploadFile, newFileName,nb, svm, ann, km, dt
+        trainModels(algorithms, ext, text, classes)
+        return render_template("result.html", operation_type="entrenar", dataset_type=ext
+        , algorithms=algorithms)
+    return render_template("algorithm_layout.html", operation_type="entrenar", form=form)
+
+@app.route("/clasificar", methods=["GET", "POST"])
+def classificate():
+    form = AlgorithmForm()
+    if request.method == "POST" and form.validate_on_submit():
+        nb = form.naive.data
+        svm = form.svm.data
+        ann = form.ann.data
+        km = form.km.data
+        dt = form.dt.data
+        if (nb or svm or ann or km or dt):
+            algorithms = {'naive':nb
+                , 'svm':svm
+                , 'neural_net':ann
+                , 'k_means':km
+                , 'decision_tree':dt}            
+            uploadFile = request.files['dataset']
+            newFileName = changeName(uploadFile.filename, "clasificar")
+            ext = getFileExt(newFileName)
+            if newFileName != None:
+                clearFiles(newFileName)
+                uploadFile.filename = newFileName
+                datasets.save(uploadFile)
+                print('Archivo: ' + newFileName + ' cargado correctamente')
+            else:
+                print("Debe seleccionar al menos un algoritmo, por favor intente de nuevo")
+            del uploadFile, newFileName,nb, svm, ann, km, dt
+            return render_template("result.html", operation_type="clasificar"
+                , dataset_type=ext, algorithms=algorithms)            
     return render_template("algorithm_layout.html", operation_type="clasificar", form=form)
 
 @app.errorhandler(404)
