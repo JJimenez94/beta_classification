@@ -7,7 +7,7 @@ class AlgorithmForm(FlaskForm):
     naive = BooleanField('Clasificador ingenuo de Bayes (Naive Bayes)')
     svm = BooleanField('Máquinas de soporte vectorial (SVM)')
     ann = BooleanField('Redes Neuronales Artificiales (ANN)')
-    km = BooleanField('K-Means')
+    knn = BooleanField('K-Nearest Neighbors (KNN)')
     dt = BooleanField('Árboles de decisión')
     classes = StringField('Nombre de la columna que contiene las clases: ', validators=[DataRequired(message="Valor requerido")])
     text = StringField('Nombre de la columna que contiene el texto: ', validators=[DataRequired(message="Valor requerido")])

@@ -38,7 +38,7 @@ def trainModels(models_dict, ext, data_col, class_col):
         if models_dict[model] == True:
             print("Se va a entrenar: " + model)
             if model == "naive":
-                initialized_classifiers.trainNaive(x_train, y_train)
+                initialized_classifiers.trainNaive(x_train, y_train, x_test, y_test)
             
 
 def clearFiles(filename):
@@ -123,7 +123,11 @@ def classificate():
 
 @app.errorhandler(404)
 def page_not_found(e):
-    return render_template('404.html'), 404
+    return render_template('404.html', error_type=404), 404
+
+@app.errorhandler(500)
+def error(e):
+    return render_template('404.html', error_type=500), 500
 
 if __name__ == "__main__":
     app.run()

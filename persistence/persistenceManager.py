@@ -42,10 +42,13 @@ class uploader:
         count_vect = CountVectorizer(ngram_range=(1, 2), stop_words=stop, min_df=5)
         tfidf_transformer = TfidfTransformer(sublinear_tf=True)        
         X_train, X_test, y_train, y_test = train_test_split(dataset['data_col'], dataset['class_col'], random_state = 0, train_size=0.7)
+        # Convirtiendo a vectores de caracteristicas
         X_train_counts = count_vect.fit_transform(X_train)
         X_train_tfidf = tfidf_transformer.fit_transform(X_train_counts)
-        del X_train, X_train_counts, stop, count_vect, tfidf_transformer
-        return X_train_tfidf, X_test, y_train, y_test
+        X_test_counts = count_vect.transform(X_test)
+        X_test_tfidf = tfidf_transformer.fit_transform(X_test_counts)
+        del X_train, X_train_counts, stop, count_vect, tfidf_transformer, X_test, X_test_counts
+        return X_train_tfidf, X_test_tfidf, y_train, y_test
         
     def balance(self, x, y):
         sampler = RandomUnderSampler(random_state=0)

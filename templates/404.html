@@ -3,8 +3,13 @@
 {% block body %}
 <section id="main" class="wrapper style1">        
     <div class="container">
+        {% if error_type == 404 %}
         <!-- Photo by Idan Arad on Unsplash -->
         <a href="/" class="image fit"><img src="{{ url_for('static', filename='404.jpg') }}" alt="" /></a>
+        {% else %}
+        <!-- Photo by Jack Anstey Arad on Unsplash -->        
+        <a href="/" class="image fit"><img src="{{ url_for('static', filename='error.jpg') }}" alt="" /></a>
+        {% endif %}
     </div>
 </section>
 {% endblock %}
