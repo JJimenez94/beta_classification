@@ -1,0 +1,22 @@
+{% extends 'layout.html'%}
+
+{% block body %}
+<!-- Main -->
+<section id="main" class="wrapper style1">
+    <div class="container">
+        <section>
+            <div style="text-align: center;">
+                <h3>¿Que operación desea realizar?</h3>
+                <div style="display: inline-block; text-align: left;">
+                    <form method="POST">
+                        {% from "includes/_formhelper.html" import render_field %}                
+                        {{ form.hidden_tag() }}
+                        {{ form.choicer }}
+                        <input type="submit" value="Continuar" class="button alt">
+                    </form>
+                </div>
+            </div>            
+        </section>        
+    </div>        
+</section>
+{% endblock %}

@@ -1,0 +1,20 @@
+{% extends 'layout.html'%}
+
+{% block body %}
+<!-- Main -->
+<section id="main" class="wrapper style1">
+    <div class="container">
+        <section>
+            <form method="POST" enctype="multipart/form-data">
+                {% from "includes/_formhelper.html" import render_field %}
+                <h3>Algoritmos</h3>
+                <p>A continuación se presenta un listado con los algoritmos implementados, seleccione al cual pertenece el modelo que desea cargar:</p>
+                <p>{{ form.hidden_tag() }}</p>
+                <p>{{form.choicer}}</p>
+                <p>{{render_field(form.model, class='alt')}}</p>
+                <input type="submit" value="Continuar" class="button alt">
+            </form>
+        </section>
+    </div>
+</section>
+{% endblock %}

@@ -18,7 +18,10 @@ class classifiers:
         print(metrics.classification_report(expected, predicted))
         print(metrics.confusion_matrix(expected, predicted))
 
-    def trainNaive(self, x_train, y_train, x_test, y_test):
+    def trainNaive(self, x_train, y_train, x_test, y_test, user_alpha=1.0, user_binarize=0.0):
+        if user_alpha != 1.0 or  user_binarize != 0.0:
+            print('Redefiniendo al clasificador Bayesiano con parametros ingresados')
+            self.nb_classifier = BernoulliNB(alpha=user_alpha, binarize=user_binarize)
         self.nb_classifier.fit(x_train, y_train)
         print(self.nb_classifier)
         filename = self.model_folders + self.naive_model
@@ -26,4 +29,10 @@ class classifiers:
         self.testNaive(x_test, y_test)
 
     def classifyNaive(self, x):
-        pass
+        filename = self.model_folders + self.naive_model
+        if os.path.exists(filename):
+            loaded_naive = pickle.load(open(filename, 'rb'))
+            return loaded_naive.predict(x)
+        else:
+            print('El modelo no ha sido entrenado previamente, omitiendo clasificación')
+            return None
