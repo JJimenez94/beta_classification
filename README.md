@@ -1,4 +1,7 @@
 # Beta Classification
+
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/cfd8c531abec49eaa512a8e2f5641d24)](https://app.codacy.com/app/jjimenez.9406/beta_classification?utm_source=github.com&utm_medium=referral&utm_content=JJimenez94/beta_classification&utm_campaign=badger)
+
 ![Logo](https://upload.wikimedia.org/wikipedia/commons/0/0c/Greek_Beta_archaic.svg)
 
 ## Español
