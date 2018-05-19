@@ -1,7 +1,7 @@
 import os.path
 from controller.utils import getFileExt, changeName, trainModels, clearFiles, createDinamycHTML
 from flask import Flask, render_template, request, flash, redirect, url_for
-from flask_uploads import UploadSet, configure_uploads
+from flask_uploads import UploadSet, configure_uploads, send_from_directory
 from view.FormClasses import AlgorithmForm, ModelForm, TrainForm
 
 app = Flask(__name__)
@@ -100,10 +100,9 @@ def train():
                 uploadFile.filename = newFileName
                 datasets.save(uploadFile)
                 print('Archivo: ' + newFileName + ' cargado correctamente')
-            del uploadFile, newFileName,nb, svm, ann, knn, dt
-            trainModels(algorithms, ext, text, classes)
+            del uploadFile, newFileName,nb, svm, ann, knn, dt            
             return render_template("result.html", operation_type="entrenar"
-                    , algorithms=algorithms)
+                    , body=createDinamycHTML(trainModels(algorithms, ext, text, classes)))
         else:
             print("Debe seleccionar al menos un algoritmo, por favor intente de nuevo")        
     return render_template("algorithm_layout.html", operation_type="entrenar", form=form)
@@ -112,6 +111,11 @@ def train():
 def classificate():
     # operation_type="clasificar"
     pass
+
+@app.route('/uploads/<path:filename>', methods=['GET', 'POST'])
+def download(filename):
+    uploads = os.path.join(app.root_path, app.config['UPLOADS_DEFAULT_DEST'])
+    return send_from_directory(directory=uploads, filename=filename)
 
 @app.errorhandler(404)
 def page_not_found(e):

@@ -21,11 +21,16 @@ def trainModels(models_dict, ext, data_col, class_col):
     initialized_classifiers = classifiers()
     persistence_manager = uploader(ext)
     x_train, y_train, x_test, y_test = persistence_manager.uploadDataset(data_col, class_col)
+    result = []
     for model in models_dict:
         if models_dict[model] == True:
             print("Se va a entrenar: " + model)
             if model == "naive":
-                initialized_classifiers.trainNaive(x_train, y_train, x_test, y_test)
+                naives_chain = initialized_classifiers.trainNaive(x_train, y_train, x_test, y_test)
+                result.append("<p>")
+                result.append(createDinamycHTML(naives_chain))
+                result.append("</p>")
+    return result
             
 
 def clearFiles(filename, path):
@@ -34,5 +39,5 @@ def clearFiles(filename, path):
     if os.path.exists(filepath):
         os.remove(filepath)
 
-def createDinamycHTML(body):    
+def createDinamycHTML(body):
     return "".join(body)
