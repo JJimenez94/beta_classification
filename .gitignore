@@ -102,3 +102,5 @@ ENV/
 
 # ignore datasets uploads
 uploads/datasets/
+static/dt.png
+static/naive.png

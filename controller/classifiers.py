@@ -1,15 +1,20 @@
 import itertools
-import matplotlib.pyplot as pyplot
+import matplotlib
+matplotlib.use('Agg')
 import numpy
 import os
 import pickle
+from matplotlib import pyplot
 from sklearn import metrics
 from sklearn.naive_bayes import BernoulliNB
+from sklearn.tree import DecisionTreeClassifier
 
 class classifiers:
     model_folders = 'uploads/models/'
     nb_classifier = BernoulliNB()
     naive_model = 'trained_naive.sav'
+    dt_classifier = DecisionTreeClassifier()
+    dt_model = 'trained_dt.sav'
 
     def __init__(self):
         os.makedirs(self.model_folders, exist_ok=True)
@@ -25,7 +30,7 @@ class classifiers:
                             , "static/naive.png"
                             , False)
         filename = self.model_folders + self.naive_model
-        elements = ["<h3> Reporte de resultados para el  clasificador ingenuo de Bayes </h3> <br>"
+        elements = ["<h3> Reporte de resultados para el clasificador ingenuo de Bayes </h3> <br>"
                 , result
                 , "<br>"
                 , "<center>"
@@ -55,13 +60,51 @@ class classifiers:
             print('El modelo no ha sido entrenado previamente, omitiendo clasificación')
             return None
 
+    def testDT(self, x, expected):
+        labels = expected.drop_duplicates()
+        predicted = self.dt_classifier.predict(x)
+        # Se muestran las metricas resultantes del entrenamiento
+        result = metrics.classification_report(expected, predicted)        
+        result = report_format(result)
+        save_confusion_matrix(metrics.confusion_matrix(expected, predicted)
+                            , labels
+                            , "static/dt.png"
+                            , False)
+        filename = self.model_folders + self.dt_model
+        elements = ["<h3> Reporte de resultados para el árbol de decisión </h3> <br>"
+                , result
+                , "<br>"
+                , "<center>"
+                , "<img src='static/dt.png' alt='Matriz de confusión el árbol de decisión '>"
+                , "</center> <br>"
+                , "Para descargar el modelo clasificado haga click: "
+                , "<a href=" + filename + ">En este enlace</a>"]
+        del labels
+        return elements
+
+    def trainDT(self, x_train, y_train, x_test, y_test):
+        self.dt_classifier.fit(x_train, y_train)
+        print(self.dt_classifier)
+        filename = self.model_folders + self.dt_model
+        pickle.dump(self.dt_classifier, open(filename, 'wb'))
+        return self.testDT(x_test, y_test)
+
+    def classifyDT(self, x):
+        filename = self.model_folders + self.dt_model
+        if os.path.exists(filename):
+            loaded_dt = pickle.load(open(filename, 'rb'))
+            return loaded_dt.predict(x)
+        else:
+            print('El modelo no ha sido entrenado previamente, omitiendo clasificación')
+            return None
+
 def save_confusion_matrix(confusion_matrix,
                           classes,
                           filename,
                           normalize=True):
     # Adaptado de: https://stackoverflow.com/questions/19233771/sklearn-plot-confusion-matrix-with-labels
-    cmap = pyplot.get_cmap('Blues')
-    pyplot.figure(figsize=(8, 6))
+    cmap = pyplot.get_cmap('Blues')    
+    pyplot.figure(figsize=(8, 6))    
     pyplot.imshow(confusion_matrix, interpolation='nearest', cmap=cmap, aspect='auto')
     pyplot.title('Matriz de confusión')
     pyplot.colorbar()
@@ -71,25 +114,17 @@ def save_confusion_matrix(confusion_matrix,
         pyplot.xticks(tick_marks, classes, rotation=45)
         pyplot.yticks(tick_marks, classes)
 
-    if normalize:
-        confusion_matrix = confusion_matrix.astype('float') / confusion_matrix.sum(axis=1)[:, numpy.newaxis]
-
-    thresh = confusion_matrix.max() / 1.5 if normalize else confusion_matrix.max() / 2
-    for i, j in itertools.product(range(confusion_matrix.shape[0]), range(confusion_matrix.shape[1])):
-        if normalize:
-            pyplot.text(j, i, "{:0.4f}".format(confusion_matrix[i, j]),
-                     horizontalalignment="center",
-                     color="white" if confusion_matrix[i, j] > thresh else "black")
-        else:
-            pyplot.text(j, i, "{:,}".format(confusion_matrix[i, j]),
-                     horizontalalignment="center",
-                     color="white" if confusion_matrix[i, j] > thresh else "black")
+    thresh = confusion_matrix.max() / 2
+    for i, j in itertools.product(range(confusion_matrix.shape[0]), range(confusion_matrix.shape[1])):                
+        pyplot.text(j, i, "{:,}".format(confusion_matrix[i, j]),
+                    horizontalalignment="center",
+                    color="white" if confusion_matrix[i, j] > thresh else "black")
     
     pyplot.ylabel('Clase correcta')
     pyplot.xlabel('Clase predecida')    
-    pyplot.ioff()
     pyplot.tight_layout()
     pyplot.savefig(filename)
+    pyplot.close(filename)
 
 def report_format(report):    
     report_data = "<table>"
