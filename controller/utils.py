@@ -30,6 +30,11 @@ def trainModels(models_dict, ext, data_col, class_col):
                 result.append("<p>")
                 result.append(createDinamycHTML(naives_chain))
                 result.append("</p>")
+            elif model == "decision_tree":
+                dt_chain = initialized_classifiers.trainDT(x_train, y_train, x_test, y_test)
+                result.append("<p>")
+                result.append(createDinamycHTML(dt_chain))
+                result.append("</p>")
     return result
             
 
