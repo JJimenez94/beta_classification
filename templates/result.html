@@ -5,7 +5,8 @@
     <header class="major">
         <h2>Resultados de {{ operation_type }}</h2>    
     </header>
-    <div class="container">        
+    <div w3-include-html="content.html" class="container">            
+        {{ body|safe }}      
     </div>
 </section>
 {% endblock %}

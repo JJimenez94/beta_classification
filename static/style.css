@@ -683,7 +683,7 @@
 	input[type="submit"],
 	input[type="reset"],
 	input[type="button"],
-	input[type="file"],
+	input[type="file"],	
 	.button {
 		-moz-appearance: none;
 		-webkit-appearance: none;

@@ -27,11 +27,20 @@
 		</ul>
 	</nav>
 	</header>
-
-	<nav id="nav">
-		{% block body %}
-		{% endblock %}
-	</nav>
+	
+	<div class="container">
+		{% with messages = get_flashed_messages() %}
+			{% if messages %}
+				<ul>
+				{% for message in messages %}
+					<li>{{ message }}</li>
+				{% endfor %}
+				</ul>
+			{% endif %}
+		{% endwith %}
+	</div>
+	{% block body %}
+	{% endblock %}
 
 	<!-- Footer -->
 	<footer id="footer">
