@@ -129,7 +129,7 @@ class classifiers:
         save_confusion_matrix(metrics.confusion_matrix(
             expected, predicted), labels, "static/knn.png", False)
         filename = self.model_folders + self.knn_model
-        elements = ["<h3> Reporte de resultados para el clasificador K-Nearest Neighbors </h3> <br>", result, "<br>", "<center>", "<img src='static/svm.png' alt='Matriz de confusión KNN '>",
+        elements = ["<h3> Reporte de resultados para el clasificador K-Nearest Neighbors </h3> <br>", result, "<br>", "<center>", "<img src='static/knn.png' alt='Matriz de confusión KNN '>",
                     "</center> <br>", "Para descargar el modelo clasificado haga click: ", "<a href=" + filename + ">En este enlace</a>"]
         del labels
         return elements
