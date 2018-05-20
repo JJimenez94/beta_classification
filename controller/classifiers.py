@@ -8,6 +8,7 @@ from matplotlib import pyplot
 from sklearn import metrics
 from sklearn.naive_bayes import BernoulliNB
 from sklearn.neighbors import KNeighborsClassifier
+from sklearn.neural_network import MLPClassifier
 from sklearn.svm import LinearSVC
 from sklearn.tree import DecisionTreeClassifier
 
@@ -22,6 +23,8 @@ class classifiers:
     svm_model = 'trained_svm.sav'
     knn_classifier = KNeighborsClassifier()
     knn_model = 'trained_knn.sav'
+    ann_classifier = MLPClassifier()
+    ann_model = 'trained_ann.sav'
 
     def __init__(self):
         os.makedirs(self.model_folders, exist_ok=True)
@@ -146,6 +149,36 @@ class classifiers:
         if os.path.exists(filename):
             loaded_knn = pickle.load(open(filename, 'rb'))
             return loaded_knn.predict(x)
+        else:
+            print('El modelo no ha sido entrenado previamente, omitiendo clasificación')
+            return None
+
+    def testANN(self, x, expected):
+        labels = expected.drop_duplicates()
+        predicted = self.ann_classifier.predict(x)
+        # Se muestran las metricas resultantes del entrenamiento
+        result = metrics.classification_report(expected, predicted)
+        result = report_format(result)
+        save_confusion_matrix(metrics.confusion_matrix(
+            expected, predicted), labels, "static/ann.png", False)
+        filename = self.model_folders + self.ann_model
+        elements = ["<h3> Reporte de resultados para el clasificador Red Neuronal Artificial </h3> <br>", result, "<br>", "<center>", "<img src='static/ann.png' alt='Matriz de confusión ANN '>",
+                    "</center> <br>", "Para descargar el modelo clasificado haga click: ", "<a href=" + filename + ">En este enlace</a>"]
+        del labels
+        return elements
+
+    def trainANN(self, x_train, y_train, x_test, y_test):
+        self.ann_classifier.fit(x_train, y_train)
+        print(self.ann_classifier)
+        filename = self.model_folders + self.ann_model
+        pickle.dump(self.ann_classifier, open(filename, 'wb'))
+        return self.testANN(x_test, y_test)
+
+    def classifyANN(self, x):
+        filename = self.model_folders + self.ann_model
+        if os.path.exists(filename):
+            loaded_ann = pickle.load(open(filename, 'rb'))
+            return loaded_ann.predict(x)
         else:
             print('El modelo no ha sido entrenado previamente, omitiendo clasificación')
             return None
