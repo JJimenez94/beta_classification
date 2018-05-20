@@ -7,6 +7,7 @@ import pickle
 from matplotlib import pyplot
 from sklearn import metrics
 from sklearn.naive_bayes import BernoulliNB
+from sklearn.svm import LinearSVC
 from sklearn.tree import DecisionTreeClassifier
 
 
@@ -16,6 +17,8 @@ class classifiers:
     naive_model = 'trained_naive.sav'
     dt_classifier = DecisionTreeClassifier()
     dt_model = 'trained_dt.sav'
+    svm_classifier = LinearSVC()
+    svm_model = 'trained_svm.sav'
 
     def __init__(self):
         os.makedirs(self.model_folders, exist_ok=True)
@@ -63,7 +66,7 @@ class classifiers:
         save_confusion_matrix(metrics.confusion_matrix(
             expected, predicted), labels, "static/dt.png", False)
         filename = self.model_folders + self.dt_model
-        elements = ["<h3> Reporte de resultados para el árbol de decisión </h3> <br>", result, "<br>", "<center>", "<img src='static/dt.png' alt='Matriz de confusión el árbol de decisión '>",
+        elements = ["<h3> Reporte de resultados para el árbol de decisión </h3> <br>", result, "<br>", "<center>", "<img src='static/dt.png' alt='Matriz de confusión árbol de decisión'>",
                     "</center> <br>", "Para descargar el modelo clasificado haga click: ", "<a href=" + filename + ">En este enlace</a>"]
         del labels
         return elements
@@ -80,6 +83,36 @@ class classifiers:
         if os.path.exists(filename):
             loaded_dt = pickle.load(open(filename, 'rb'))
             return loaded_dt.predict(x)
+        else:
+            print('El modelo no ha sido entrenado previamente, omitiendo clasificación')
+            return None
+
+    def testSVM(self, x, expected):
+        labels = expected.drop_duplicates()
+        predicted = self.svm_classifier.predict(x)
+        # Se muestran las metricas resultantes del entrenamiento
+        result = metrics.classification_report(expected, predicted)
+        result = report_format(result)
+        save_confusion_matrix(metrics.confusion_matrix(
+            expected, predicted), labels, "static/svm.png", False)
+        filename = self.model_folders + self.svm_model
+        elements = ["<h3> Reporte de resultados para el clasificador máquinas de soporte vectorial </h3> <br>", result, "<br>", "<center>", "<img src='static/svm.png' alt='Matriz de confusión SVM '>",
+                    "</center> <br>", "Para descargar el modelo clasificado haga click: ", "<a href=" + filename + ">En este enlace</a>"]
+        del labels
+        return elements
+
+    def trainSVM(self, x_train, y_train, x_test, y_test):
+        self.svm_classifier.fit(x_train, y_train)
+        print(self.svm_classifier)
+        filename = self.model_folders + self.svm_model
+        pickle.dump(self.svm_classifier, open(filename, 'wb'))
+        return self.testSVM(x_test, y_test)
+
+    def classifySVM(self, x):
+        filename = self.model_folders + self.svm_model
+        if os.path.exists(filename):
+            loaded_svm = pickle.load(open(filename, 'rb'))
+            return loaded_svm.predict(x)
         else:
             print('El modelo no ha sido entrenado previamente, omitiendo clasificación')
             return None

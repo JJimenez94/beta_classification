@@ -1,6 +1,6 @@
 import os.path
 from controller.utils import getFileExt, changeName, trainModels, clearFiles, createDinamycHTML
-from flask import Flask, render_template, request, flash, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for
 from flask_uploads import UploadSet, configure_uploads, send_from_directory
 from view.FormClasses import AlgorithmForm, ModelForm, TrainForm
 
