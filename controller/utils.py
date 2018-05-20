@@ -47,6 +47,12 @@ def trainModels(models_dict, ext, data_col, class_col):
                 result.append("<p>")
                 result.append(createDinamycHTML(svm_chain))
                 result.append("</p>")
+            elif model == "KNN":
+                knn_chain = initialized_classifiers.trainKNN(
+                    x_train, y_train, x_test, y_test)
+                result.append("<p>")
+                result.append(createDinamycHTML(knn_chain))
+                result.append("</p>")
     return result
 
 

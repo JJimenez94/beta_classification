@@ -7,6 +7,7 @@ import pickle
 from matplotlib import pyplot
 from sklearn import metrics
 from sklearn.naive_bayes import BernoulliNB
+from sklearn.neighbors import KNeighborsClassifier
 from sklearn.svm import LinearSVC
 from sklearn.tree import DecisionTreeClassifier
 
@@ -19,6 +20,8 @@ class classifiers:
     dt_model = 'trained_dt.sav'
     svm_classifier = LinearSVC()
     svm_model = 'trained_svm.sav'
+    knn_classifier = KNeighborsClassifier()
+    knn_model = 'trained_knn.sav'
 
     def __init__(self):
         os.makedirs(self.model_folders, exist_ok=True)
@@ -113,6 +116,36 @@ class classifiers:
         if os.path.exists(filename):
             loaded_svm = pickle.load(open(filename, 'rb'))
             return loaded_svm.predict(x)
+        else:
+            print('El modelo no ha sido entrenado previamente, omitiendo clasificación')
+            return None
+
+    def testKNN(self, x, expected):
+        labels = expected.drop_duplicates()
+        predicted = self.knn_classifier.predict(x)
+        # Se muestran las metricas resultantes del entrenamiento
+        result = metrics.classification_report(expected, predicted)
+        result = report_format(result)
+        save_confusion_matrix(metrics.confusion_matrix(
+            expected, predicted), labels, "static/knn.png", False)
+        filename = self.model_folders + self.knn_model
+        elements = ["<h3> Reporte de resultados para el clasificador K-Nearest Neighbors </h3> <br>", result, "<br>", "<center>", "<img src='static/svm.png' alt='Matriz de confusión KNN '>",
+                    "</center> <br>", "Para descargar el modelo clasificado haga click: ", "<a href=" + filename + ">En este enlace</a>"]
+        del labels
+        return elements
+
+    def trainKNN(self, x_train, y_train, x_test, y_test):
+        self.knn_classifier.fit(x_train, y_train)
+        print(self.knn_classifier)
+        filename = self.model_folders + self.knn_model
+        pickle.dump(self.knn_classifier, open(filename, 'wb'))
+        return self.testKNN(x_test, y_test)
+
+    def classifyKNN(self, x):
+        filename = self.model_folders + self.knn_model
+        if os.path.exists(filename):
+            loaded_knn = pickle.load(open(filename, 'rb'))
+            return loaded_knn.predict(x)
         else:
             print('El modelo no ha sido entrenado previamente, omitiendo clasificación')
             return None
