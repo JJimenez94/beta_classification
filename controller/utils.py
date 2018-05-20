@@ -41,6 +41,12 @@ def trainModels(models_dict, ext, data_col, class_col):
                 result.append("<p>")
                 result.append(createDinamycHTML(dt_chain))
                 result.append("</p>")
+            elif model == "svm":
+                svm_chain = initialized_classifiers.trainSVM(
+                    x_train, y_train, x_test, y_test)
+                result.append("<p>")
+                result.append(createDinamycHTML(svm_chain))
+                result.append("</p>")
     return result
 
 

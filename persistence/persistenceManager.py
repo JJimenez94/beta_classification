@@ -1,6 +1,3 @@
-import matplotlib.pyplot as pyplot
-import nltk
-import numpy
 import pandas
 from imblearn.under_sampling import RandomUnderSampler
 from nltk.corpus import stopwords
@@ -12,10 +9,10 @@ from string import punctuation
 class uploader:
     allowed_extensions = [".csv", ".txt", ".xls", ".xlsx"]
 
-    def __init__(self, type):
-        if type in self.allowed_extensions:
-            self.type = type
-            self.path = "uploads/datasets/dataset" + type
+    def __init__(self, input_type):
+        if input_type in self.allowed_extensions:
+            self.type = input_type
+            self.path = "uploads/datasets/dataset" + input_type
         else:
             self.type = None
             print("Extensión invalida")
