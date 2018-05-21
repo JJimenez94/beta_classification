@@ -3,9 +3,10 @@ import matplotlib
 matplotlib.use('Agg')
 import numpy
 import os
-import pickle
 from matplotlib import pyplot
 from sklearn import metrics
+from sklearn.externals import joblib
+from sklearn.model_selection import RandomizedSearchCV
 from sklearn.naive_bayes import BernoulliNB
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.neural_network import MLPClassifier
@@ -17,11 +18,16 @@ class classifiers:
     model_folders = 'uploads/models/'
     nb_classifier = BernoulliNB()
     naive_model = 'trained_naive.sav'
+    nb_parameters = {'alpha': list(numpy.arange(0, 1.1, 0.01)), 'binarize': list(
+        numpy.arange(0, 1.1, 0.01)), 'fit_prior': [True, False]}
     dt_classifier = DecisionTreeClassifier()
     dt_model = 'trained_dt.sav'
+    dt_parameters = {'criterion': ['gini', 'entropy']}
     svm_classifier = LinearSVC()
     svm_model = 'trained_svm.sav'
-    knn_classifier = KNeighborsClassifier()
+    svm_parameters = {'loss': ['hinge', 'squared_hinge'],
+                      'C': list(numpy.arange(0.1, 1.1, 0.01))}
+    knn_classifier = KNeighborsClassifier(algorithm='auto', n_neighbors=20)
     knn_model = 'trained_knn.sav'
     ann_classifier = MLPClassifier()
     ann_model = 'trained_ann.sav'
@@ -38,26 +44,26 @@ class classifiers:
         save_confusion_matrix(metrics.confusion_matrix(
             expected, predicted), labels, "static/naive.png", False)
         filename = self.model_folders + self.naive_model
-        elements = ["<h3> Reporte de resultados para el clasificador ingenuo de Bayes </h3> <br>", result, "<br>", "<center>", "<img src='static/naive.png' alt='Matriz de confusión clasificador ingenuo de Bayes'>",
-                    "</center> <br>", "Para descargar el modelo clasificado haga click: ", "<a href=" + filename + ">En este enlace</a>"]
+        elements = ["<h3> Reporte de resultados para el clasificador ingenuo de Bayes </h3> <br>", result, "<br>", "<center> <img src='static/naive.png' alt='Matriz de confusión clasificador ingenuo de Bayes'>",
+                    "</center> <br> Para descargar el modelo clasificado haga click: ", "<a href=" + filename + ">En este enlace</a>"]
         del labels
         return elements
 
-    def trainNaive(self, x_train, y_train, x_test, y_test, user_alpha=1.0, user_binarize=0.0):
-        if user_alpha != 1.0 or user_binarize != 0.0:
-            print('Redefiniendo al clasificador Bayesiano con parametros ingresados')
-            self.nb_classifier = BernoulliNB(
-                alpha=user_alpha, binarize=user_binarize)
-        self.nb_classifier.fit(x_train, y_train)
+    def trainNaive(self, x_train, y_train, x_test, y_test):
         print(self.nb_classifier)
+        print('Redefiniendo el clasificador Bayesiano')
+        self.nb_classifier = RandomizedSearchCV(
+            estimator=self.nb_classifier, param_distributions=self.nb_parameters, n_iter=100)
+        print(self.nb_classifier)
+        self.nb_classifier.fit(x_train, y_train)
         filename = self.model_folders + self.naive_model
-        pickle.dump(self.nb_classifier, open(filename, 'wb'))
+        joblib.dump(self.nb_classifier, filename)
         return self.testNaive(x_test, y_test)
 
     def classifyNaive(self, x):
         filename = self.model_folders + self.naive_model
         if os.path.exists(filename):
-            loaded_naive = pickle.load(open(filename, 'rb'))
+            loaded_naive = joblib.load(filename, 'rb')
             return loaded_naive.predict(x)
         else:
             print('El modelo no ha sido entrenado previamente, omitiendo clasificación')
@@ -73,21 +79,25 @@ class classifiers:
             expected, predicted), labels, "static/dt.png", False)
         filename = self.model_folders + self.dt_model
         elements = ["<h3> Reporte de resultados para el árbol de decisión </h3> <br>", result, "<br>", "<center>", "<img src='static/dt.png' alt='Matriz de confusión árbol de decisión'>",
-                    "</center> <br>", "Para descargar el modelo clasificado haga click: ", "<a href=" + filename + ">En este enlace</a>"]
+                    "</center> <br> Para descargar el modelo clasificado haga click: ", "<a href=" + filename + ">En este enlace</a>"]
         del labels
         return elements
 
     def trainDT(self, x_train, y_train, x_test, y_test):
-        self.dt_classifier.fit(x_train, y_train)
         print(self.dt_classifier)
+        print('Redefiniendo el clasificador Arbol de decisión')
+        self.dt_classifier = RandomizedSearchCV(
+            estimator=self.dt_classifier, param_distributions=self.dt_parameters, n_iter=2)
+        print(self.dt_classifier)
+        self.dt_classifier.fit(x_train, y_train)
         filename = self.model_folders + self.dt_model
-        pickle.dump(self.dt_classifier, open(filename, 'wb'))
+        joblib.dump(self.dt_classifier, filename)
         return self.testDT(x_test, y_test)
 
     def classifyDT(self, x):
         filename = self.model_folders + self.dt_model
         if os.path.exists(filename):
-            loaded_dt = pickle.load(open(filename, 'rb'))
+            loaded_dt = joblib.load(filename, 'rb')
             return loaded_dt.predict(x)
         else:
             print('El modelo no ha sido entrenado previamente, omitiendo clasificación')
@@ -108,16 +118,20 @@ class classifiers:
         return elements
 
     def trainSVM(self, x_train, y_train, x_test, y_test):
-        self.svm_classifier.fit(x_train, y_train)
         print(self.svm_classifier)
+        print('Redefiniendo el clasificador SVM')
+        self.svm_classifier = RandomizedSearchCV(
+            estimator=self.svm_classifier, param_distributions=self.svm_parameters, n_iter=100)
+        print(self.svm_classifier)
+        self.svm_classifier.fit(x_train, y_train)
         filename = self.model_folders + self.svm_model
-        pickle.dump(self.svm_classifier, open(filename, 'wb'))
+        joblib.dump(self.svm_classifier, filename)
         return self.testSVM(x_test, y_test)
 
     def classifySVM(self, x):
         filename = self.model_folders + self.svm_model
         if os.path.exists(filename):
-            loaded_svm = pickle.load(open(filename, 'rb'))
+            loaded_svm = joblib.load(filename, 'rb')
             return loaded_svm.predict(x)
         else:
             print('El modelo no ha sido entrenado previamente, omitiendo clasificación')
@@ -138,16 +152,16 @@ class classifiers:
         return elements
 
     def trainKNN(self, x_train, y_train, x_test, y_test):
-        self.knn_classifier.fit(x_train, y_train)
         print(self.knn_classifier)
+        self.knn_classifier.fit(x_train, y_train)
         filename = self.model_folders + self.knn_model
-        pickle.dump(self.knn_classifier, open(filename, 'wb'))
+        joblib.dump(self.knn_classifier, filename)
         return self.testKNN(x_test, y_test)
 
     def classifyKNN(self, x):
         filename = self.model_folders + self.knn_model
         if os.path.exists(filename):
-            loaded_knn = pickle.load(open(filename, 'rb'))
+            loaded_knn = joblib.load(filename, 'rb')
             return loaded_knn.predict(x)
         else:
             print('El modelo no ha sido entrenado previamente, omitiendo clasificación')
@@ -168,16 +182,16 @@ class classifiers:
         return elements
 
     def trainANN(self, x_train, y_train, x_test, y_test):
-        self.ann_classifier.fit(x_train, y_train)
         print(self.ann_classifier)
+        self.ann_classifier.fit(x_train, y_train)
         filename = self.model_folders + self.ann_model
-        pickle.dump(self.ann_classifier, open(filename, 'wb'))
+        joblib.dump(self.ann_classifier, filename)
         return self.testANN(x_test, y_test)
 
     def classifyANN(self, x):
         filename = self.model_folders + self.ann_model
         if os.path.exists(filename):
-            loaded_ann = pickle.load(open(filename, 'rb'))
+            loaded_ann = joblib.load(filename, 'rb')
             return loaded_ann.predict(x)
         else:
             print('El modelo no ha sido entrenado previamente, omitiendo clasificación')
