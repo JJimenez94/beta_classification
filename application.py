@@ -143,7 +143,7 @@ def classificate():
             pyplot.savefig('static/classification_resume.png')
             pyplot.close('static/classification_resume.png')
             elements = ["<h3> Reporte de tiempo para el proceso de clasificación por algoritmo empleado </h3>",
-                        "<br> <center><img src='static/classification_resume.png'> </center>", 
+                        "<br> <center><img src='static/classification_resume.png'> </center>",
                         "<br> <p> Los datasets clasificados son: </p>", createDinamycHTML(urls)]
             return render_template("result.html", operation_type="clasificar", body=createDinamycHTML(elements))
         else:
