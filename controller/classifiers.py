@@ -63,7 +63,7 @@ class classifiers:
     def classifyNaive(self, x):
         filename = self.model_folders + self.naive_model
         if os.path.exists(filename):
-            loaded_naive = joblib.load(filename, 'rb')
+            loaded_naive = joblib.load(filename, 'r')
             return loaded_naive.predict(x)
         else:
             print('El modelo no ha sido entrenado previamente, omitiendo clasificación')
@@ -97,7 +97,7 @@ class classifiers:
     def classifyDT(self, x):
         filename = self.model_folders + self.dt_model
         if os.path.exists(filename):
-            loaded_dt = joblib.load(filename, 'rb')
+            loaded_dt = joblib.load(filename, 'r')
             return loaded_dt.predict(x)
         else:
             print('El modelo no ha sido entrenado previamente, omitiendo clasificación')
@@ -131,7 +131,7 @@ class classifiers:
     def classifySVM(self, x):
         filename = self.model_folders + self.svm_model
         if os.path.exists(filename):
-            loaded_svm = joblib.load(filename, 'rb')
+            loaded_svm = joblib.load(filename, 'r')
             return loaded_svm.predict(x)
         else:
             print('El modelo no ha sido entrenado previamente, omitiendo clasificación')
@@ -161,7 +161,7 @@ class classifiers:
     def classifyKNN(self, x):
         filename = self.model_folders + self.knn_model
         if os.path.exists(filename):
-            loaded_knn = joblib.load(filename, 'rb')
+            loaded_knn = joblib.load(filename, 'r')
             return loaded_knn.predict(x)
         else:
             print('El modelo no ha sido entrenado previamente, omitiendo clasificación')
@@ -191,7 +191,7 @@ class classifiers:
     def classifyANN(self, x):
         filename = self.model_folders + self.ann_model
         if os.path.exists(filename):
-            loaded_ann = joblib.load(filename, 'rb')
+            loaded_ann = joblib.load(filename, 'r')
             return loaded_ann.predict(x)
         else:
             print('El modelo no ha sido entrenado previamente, omitiendo clasificación')

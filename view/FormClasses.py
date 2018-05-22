@@ -18,6 +18,18 @@ class AlgorithmForm(FlaskForm):
         message="Archivo requerido"), FileAllowed(["txt", "csv", "xls", "xlsx"], "solamente se permiten datasets")])
 
 
+class ClassifyForm(FlaskForm):
+    naive = BooleanField('Clasificador ingenuo de Bayes (Naive Bayes)')
+    svm = BooleanField('Máquinas de soporte vectorial (SVM)')
+    ann = BooleanField('Redes Neuronales Artificiales (ANN)')
+    knn = BooleanField('K-Nearest Neighbors (KNN)')
+    dt = BooleanField('Árboles de decisión')
+    text = StringField('Nombre de la columna que contiene el texto: ', validators=[
+                       DataRequired(message="Valor requerido")])
+    dataset = FileField('Seleccione el dataset: ', validators=[FileRequired(
+        message="Archivo requerido"), FileAllowed(["txt", "csv", "xls", "xlsx"], "solamente se permiten datasets")])
+
+
 class ModelForm(FlaskForm):
     choicer = RadioField(
         'Algoritmos disponibles: ', validators=[DataRequired(message="Valor requerido")], choices=[('naive', 'Clasificador ingenuo de Bayes (Naive Bayes)'), ('svm', 'Máquinas de soporte vectorial (SVM)'), ('ann', 'Redes Neuronales Artificiales (ANN)'), ('knn', 'K-Nearest Neighbors (KNN)'), ('dt', 'Árboles de decisión')])

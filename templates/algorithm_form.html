@@ -31,8 +31,7 @@
                 {% if operation_type == "entrenar" %}
                     <p>En este espacio deberá cargar el dataset para {{ operation_type }} los algoritmos seleccionados, las extensiones soportadas son:
                         <ul>
-                            <li>txt</li>
-                            <!-- <li>arff</li> -->            
+                            <li>txt</li>                                       
                             <li>csv</li>
                             <li>xls</li>
                             <li>xlsx</li>
@@ -42,6 +41,7 @@
                 {% else %}
                     <p>En este espacio deberá cargar el dataset que los algoritmos deben {{ operation_type }}.</p>
                     <p>Se espera que el dataset esté compuesto por una sola columna en donde cada registro corresponda con un texto a clasificar</p>
+                    {{render_field(form.text)}} <br>
                 {% endif %}                
                 {{render_field(form.dataset, class='alt')}}
                 {{ form.csrf_token }}

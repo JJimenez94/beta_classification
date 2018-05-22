@@ -107,3 +107,5 @@ static/naive.png
 static/svm.png
 static/knn.png
 static/ann.png
+static/classification_resume.png
+naive_bayesresult.csv
